@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Dogfy Diet - Magui Moberg</title>
+    <style>
+        :root {
+            --dogfy-orange: #ff6b00;
+            --dogfy-dark: #2c3e50;
+            --dogfy-bg: #fdfdfd;
+            --dogfy-light-orange: #fff4eb;
+        }
+
+        body { 
+            font-family: 'Lexend', 'Segoe UI', sans-serif; 
+            background-color: var(--dogfy-bg); 
+            margin: 0; 
+            padding: 20px; 
+            color: var(--dogfy-dark);
+        }
+
+        .main-container { 
+            display: grid; 
+            grid-template-columns: 1fr 400px; 
+            gap: 25px; 
+            max-width: 1200px; 
+            margin: auto; 
+        }
+
+        .card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 30px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05); 
+            border: 1px solid #f0f0f0;
+        }
+
+        .header { margin-bottom: 30px; }
+        .logo-img { height: 55px; margin-bottom: 15px; }
+        h2 { color: var(--dogfy-orange); margin: 0; font-size: 28px; font-weight: 800; }
+
+        .input-group { margin-bottom: 25px; }
+        label { display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px; color: #444; }
+        
+        input[type="number"] { 
+            width: 100%; 
+            padding: 15px; 
+            border: 2px solid #eee; 
+            border-radius: 15px; 
+            font-size: 16px; 
+            box-sizing: border-box;
+        }
+
+        input[type="number"]:focus { 
+            border-color: var(--dogfy-orange); 
+            outline: none;
+        }
+
+        .menus-box { 
+            background: var(--dogfy-light-orange); 
+            padding: 25px; 
+            border-radius: 20px; 
+            margin-top: 10px; 
+        }
+
+        .menus-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+        }
+
+        .menu-item { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 12px 18px; 
+            background: white; 
+            border-radius: 12px; 
+            border: 1px solid #ffe0cc; 
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+
+        input[type="checkbox"] { accent-color: var(--dogfy-orange); transform: scale(1.3); cursor: pointer; }
+
+        .results { 
+            background: var(--dogfy-dark); 
+            color: white; 
+            padding: 35px; 
+            border-radius: 25px; 
+            margin-top: 35px; 
+        }
+
+        .res-line { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1.1em; align-items: center; }
+        .highlight { color: var(--dogfy-orange); font-weight: 800; font-size: 1.5em; }
+        
+        .avg-kcal-box {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #555;
+            color: #bdc3c7;
+            font-size: 0.95em;
+        }
+
+        .info-panel { display: flex; flex-direction: column; gap: 20px; }
+        .info-card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 25px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03); 
+            border: 1px solid #f0f0f0;
+        }
+
+        .info-card h3 { 
+            margin: 0 0 15px 0; 
+            font-size: 16px; 
+            color: var(--dogfy-orange); 
+            text-transform: uppercase; 
+            font-weight: 800;
+        }
+
+        .info-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .info-table td { padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+        .info-table .val { font-weight: 800; text-align: right; color: var(--dogfy-dark); }
+
+        footer { 
+            text-align: center; 
+            grid-column: 1 / span 2; 
+            margin-top: 50px; 
+            color: #ccc; 
+            font-size: 12px; 
+            font-weight: 600;
+        }
+
+        @media (max-width: 950px) { .main-container { grid-template-columns: 1fr; } }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="main-container">
+    
+    <div class="card">
+        <div class="header">
+            <img src="logo dogfy.png" alt="Dogfy Diet" class="logo-img" onerror="this.style.display='none'">
+            <h2>Calculadora de gramaje</h2>
+        </div>
+        
+        <div class="input-group">
+            <label>Peso del perro (Kg)</label>
+            <input type="number" id="peso" placeholder="0" oninput="calcular()">
+        </div>
+
+        <div class="input-group">
+            <label>Factor de corrección</label>
+            <input type="number" id="factor" step="0.1" placeholder="0.0" oninput="calcular()">
+        </div>
+
+        <label>Recetas seleccionadas</label>
+        <div class="menus-box">
+            <div class="menus-grid">
+                <div class="menu-item"><span>Pollo (1400 Kcal/Kg)</span><input type="checkbox" class="menu-check" value="1400" checked onchange="calcular()"></div>
+                <div class="menu-item"><span>Buey (1050 Kcal/Kg)</span><input type="checkbox" class="menu-check" value="1050" onchange="calcular()"></div>
+                <div class="menu-item"><span>Salmón (1900 Kcal/Kg)</span><input type="checkbox" class="menu-check" value="1900" onchange="calcular()"></div>
+                <div class="menu-item"><span>Pavo (1400 Kcal/Kg)</span><input type="checkbox" class="menu-check" value="1400" onchange="calcular()"></div>
+            </div>
+        </div>
+
+        <div class="results">
+            <div class="res-line"><span>RER</span> <span id="rer">0 Kcal</span></div>
+            <div class="res-line"><span>DER</span> <span id="der">0 Kcal</span></div>
+            <hr style="border: 0; border-top: 1px solid #555; margin: 20px 0;">
+            <div class="res-line"><span>Gramos de Dogfy que cubren el RER</span> <span id="grRer">0 g</span></div>
+            <div class="res-line"><span>Gramos de Dogfy que cubren el DER</span> <span class="highlight" id="grDer">0 g</span></div>
+            
+            <div class="avg-kcal-box">
+                <div class="res-line" style="margin-bottom: 0;">
+                    <span>Promedio Selección:</span>
+                    <span id="avgKcal" style="color: white; font-weight: 600;">1400 Kcal/Kg</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <div class="info-card">
+            <h3>Factores de Corrección</h3>
+            <table class="info-table">
+                <tr><td>Sedentario</td><td class="val">1,2</td></tr>
+                <tr><td>Actividad moderada</td><td class="val">1,5</td></tr>
+                <tr><td>Muy activo</td><td class="val">2,0</td></tr>
+                <tr><td>Cachorro < 4 meses</td><td class="val">3,0</td></tr>
+                <tr><td>Cachorro 4 - 6 meses</td><td class="val">2,5</td></tr>
+                <tr><td>Cachorro > 6 meses</td><td class="val">2,0</td></tr>
+                <tr><td>Gestación / Lactancia</td><td class="val">1,8 - 2,5</td></tr>
+                <tr><td>Sobrepeso / Obesidad</td><td class="val">1,0</td></tr>
+            </table>
+        </div>
+
+        <div class="info-card">
+            <h3>Combinación de Bolsitas</h3>
+            <table class="info-table">
+                <tr><td>600g</td><td class="val">2 de 300g</td></tr>
+                <tr><td>700g</td><td class="val">1 de 300g + 1 de 400g</td></tr>
+                <tr><td>800g</td><td class="val">2 de 400g</td></tr>
+                <tr><td>900g</td><td class="val">1 de 400g + 1 de 500g</td></tr>
+                <tr><td>1000g</td><td class="val">2 de 500g</td></tr>
+                <tr><td>1100g</td><td class="val">2 de 500g + 1 de 100g</td></tr>
+                <tr><td>1200g</td><td class="val">3 de 400g</td></tr>
+                <tr><td>1300g</td><td class="val">2 de 500g + 1 de 300g</td></tr>
+                <tr><td>1400g</td><td class="val">2 de 500g + 1 de 400g</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <footer>CREADO POR MAGUI MOBERG © 2026</footer>
+</div>
+
+<script>
+    function calcular() {
+        const pesoInput = document.getElementById('peso').value;
+        const factorInput = document.getElementById('factor').value;
+        const checks = document.querySelectorAll('.menu-check:checked');
+
+        // Cálculo independiente del promedio
+        if (checks.length > 0) {
+            let sumaKcal = 0;
+            checks.forEach(c => sumaKcal += parseFloat(c.value));
+            const promedioKcal = sumaKcal / checks.length;
+            document.getElementById('avgKcal').innerText = Math.round(promedioKcal) + " Kcal/Kg";
+            
+            if (pesoInput && factorInput) {
+                const peso = parseFloat(pesoInput);
+                const factor = parseFloat(factorInput);
+                
+                const rer = 70 * Math.pow(peso, 0.75);
+                const der = rer * factor;
+                const grRer = (rer / promedioKcal) * 1000;
+                const grDer = (der / promedioKcal) * 1000;
+
+                document.getElementById('rer').innerText = Math.round(rer) + " Kcal";
+                document.getElementById('der').innerText = Math.round(der) + " Kcal";
+                document.getElementById('grRer').innerText = Math.round(grRer) + " g";
+                document.getElementById('grDer').innerText = Math.round(grDer) + " g";
+            } else {
+                limpiarGramos();
+            }
+        } else {
+            document.getElementById('avgKcal').innerText = "0 Kcal/Kg";
+            limpiarGramos();
+        }
+    }
+
+    function limpiarGramos() {
+        document.getElementById('rer').innerText = "0 Kcal";
+        document.getElementById('der').innerText = "0 Kcal";
+        document.getElementById('grRer').innerText = "0 g";
+        document.getElementById('grDer').innerText = "0 g";
+    }
+</script>
+
+</body>
+</html>
